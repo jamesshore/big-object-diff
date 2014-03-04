@@ -2,6 +2,30 @@
 
 A tool for visualizing the differences between large JavaScript objects.
 
+This tool provides the ability to compare large objects and output the results to the console. The main difference between it and other tools is that:
+
+1. It's rigorously tested.
+
+2. Elements that haven't changed aren't displayed.
+
+## Example output
+
+```
+{
+  ...
+  c: {
+    ...
+    c1: {
+      ...
+      c1d: [ 1, 2, 4 ]  // was [ 1, 2, 3 ]
+      ...
+    }
+    ...
+  }
+  ...
+}
+
+
 
 ## Version History
 
