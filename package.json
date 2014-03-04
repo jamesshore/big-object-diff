@@ -23,7 +23,11 @@
   },
   "homepage": "https://github.com/jamesshore/big-object-diff",
   "devDependencies": {
+    "jake": "^0.7.7",
+    "mocha": "^1.17.1",
+    "simplebuild-jshint": "^0.2.0",
+    "jshint": "^2.4.4",
+    "expect.js": "^0.3.1"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

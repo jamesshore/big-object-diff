@@ -2,7 +2,7 @@
 /*global desc, task, jake, fail, complete, directory*/
 "use strict";
 
-var jshint = require("./src/index.js");
+var jshint = require("simplebuild-jshint");
 var Mocha = require("mocha");
 
 desc("Validate code (lint and test)");
@@ -12,6 +12,7 @@ task("default", ["lint", "test"], function() {
 
 desc("Lint everything");
 task("lint", function() {
+	process.stdout.write("Linting: ");
 	jshint.checkFiles({
 		files: [ "*.js", "src/**/*.js" ],
 		options: lintOptions(),
