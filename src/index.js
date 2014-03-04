@@ -1,6 +1,22 @@
 // Copyright (c) 2014 Titanium I.T. LLC. All rights reserved. For license, see "README" or "LICENSE" file.
 "use strict";
 
+exports.render = function(obj) {
+	return flatRender(obj);
+};
+
+function flatRender(obj) {
+	if (obj === undefined) return "undefined";
+	if (obj === null) return "null";
+	if (typeof obj === "string") return JSON.stringify(obj);
+	if (typeof obj === "function") {
+		if (!obj.name) return "<anon>()";
+		else return obj.name + "()";
+	}
+
+	return obj.toString();
+}
+
 exports.match = function(a, b) {
 	if (typeof a === "object" && typeof b === "object") return objectMatch(a, b);
 	else return flatMatch(a, b);
