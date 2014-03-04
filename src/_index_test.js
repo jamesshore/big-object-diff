@@ -42,6 +42,22 @@ describe("render", function() {
 		});
 	});
 
+	describe("objects:", function() {
+		it("empty", function() {
+			expect(diff.render({})).to.equal("{}");
+		});
+
+		it("flat", function() {
+			expect(diff.render({ a: 1, b: 2, c: 3 })).to.equal(
+				"{\n" +
+				"  a: 1\n" +
+				"  b: 2\n" +
+				"  c: 3\n" +
+				"}"
+			);
+		});
+	});
+
 });
 
 describe("match", function() {

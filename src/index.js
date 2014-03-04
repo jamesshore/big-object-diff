@@ -2,12 +2,12 @@
 "use strict";
 
 exports.render = function(obj) {
-	return flatRender(obj);
+	if (typeof obj === "object") return objectRender(obj);
+	else return flatRender(obj);
 };
 
 function flatRender(obj) {
 	if (obj === undefined) return "undefined";
-	if (obj === null) return "null";
 	if (typeof obj === "string") return JSON.stringify(obj);
 	if (typeof obj === "function") {
 		if (!obj.name) return "<anon>()";
@@ -15,6 +15,18 @@ function flatRender(obj) {
 	}
 
 	return obj.toString();
+}
+
+function objectRender(obj) {
+	if (obj === null) return "null";
+
+	var keys = Object.getOwnPropertyNames(obj);
+	if (keys.length === 0) return "{}";
+
+	var properties = keys.reduce(function(accumulated, key) {
+		return accumulated + "\n  " + key + ": " + exports.render(obj[key]);
+	}, "");
+	return "{" + properties + "\n}";
 }
 
 exports.match = function(a, b) {
