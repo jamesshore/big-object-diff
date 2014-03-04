@@ -56,6 +56,18 @@ describe("render", function() {
 				"}"
 			);
 		});
+
+		it("nested", function() {
+			expect(diff.render({ a: 1, b: { b1: 2, b2: 3 } })).to.equal(
+				"{\n" +
+				"  a: 1\n" +
+				"  b: {\n" +
+				"    b1: 2\n" +
+				"    b2: 3\n" +
+				"  }\n" +
+				"}"
+			);
+		});
 	});
 
 });

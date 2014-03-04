@@ -1,10 +1,16 @@
 // Copyright (c) 2014 Titanium I.T. LLC. All rights reserved. For license, see "README" or "LICENSE" file.
 "use strict";
 
+var INDENT_TEXT = "  ";
+
 exports.render = function(obj) {
-	if (typeof obj === "object") return objectRender(obj);
-	else return flatRender(obj);
+	return renderWithIndent("", obj);
 };
+
+function renderWithIndent(indent, obj) {
+	if (typeof obj === "object") return objectRender(indent, obj);
+	else return flatRender(obj);
+}
 
 function flatRender(obj) {
 	if (obj === undefined) return "undefined";
@@ -17,16 +23,17 @@ function flatRender(obj) {
 	return obj.toString();
 }
 
-function objectRender(obj) {
+function objectRender(oldIndent, obj) {
 	if (obj === null) return "null";
 
 	var keys = Object.getOwnPropertyNames(obj);
 	if (keys.length === 0) return "{}";
 
+	var newIndent = oldIndent + INDENT_TEXT;
 	var properties = keys.reduce(function(accumulated, key) {
-		return accumulated + "\n  " + key + ": " + exports.render(obj[key]);
+		return accumulated + "\n" + newIndent + key + ": " + renderWithIndent(newIndent, obj[key]);
 	}, "");
-	return "{" + properties + "\n}";
+	return "{" + properties + "\n" + oldIndent + "}";
 }
 
 exports.match = function(a, b) {
