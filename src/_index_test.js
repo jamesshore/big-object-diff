@@ -52,6 +52,11 @@ describe("compares flat types:", function() {
 });
 
 describe("compares objects:", function() {
+	it("identical", function() {
+		var a = { a: 1 };
+		expect(diff.match(a, a)).to.be(true);
+	});
+
 	it("empty", function() {
 		expect(diff.match({}, {})).to.be(true);
 	});
@@ -104,4 +109,61 @@ describe("compares objects:", function() {
 		expect(diff.match(a1, a2)).to.be(true);
 		expect(diff.match(a1, b)).to.be(false);
 	});
+});
+
+describe("compares arrays:", function() {
+	it("empty", function() {
+		expect(diff.match([], [])).to.be(true);
+	});
+
+	it("same size", function() {
+		expect(diff.match([ 1, 2, 3 ], [ 1, 2, 3 ] )).to.be(true);
+		expect(diff.match([ 1, 2, 3 ], [ 1, "X", 3 ] )).to.be(false);
+	});
+
+	it("different sizes", function() {
+		expect(diff.match([ 1, 2 ], [ 1, 2, 3] )).to.be(false);
+		expect(diff.match([ 1, 2 ], [ 1 ] )).to.be(false);
+	});
+
+	it("nested", function() {
+		expect(diff.match(
+			[ 1, [ "a", "b", [ 3, 4, 5 ] ]],
+			[ 1, [ "a", "b", [ 3, 4, 5 ] ]]
+		)).to.be(true);
+
+		expect(diff.match(
+			[ 1, [ "a", "b", [ 3, 4, 5 ] ]],
+			[ 1, [ "a", "b", [ 3, 4, "X" ] ]]
+		)).to.be(false);
+	});
+
+	it("mixed with objects", function() {
+		expect(diff.match(
+			[ 1, { a: [ 2, 3 ] }],
+			[ 1, { a: [ 2, 3 ] }]
+		)).to.be(true);
+
+		expect(diff.match(
+			[ 1, { a: [ 2, 3 ] }],
+			[ 1, { a: [ 2, "X" ] }]
+		)).to.be(false);
+	});
+
+	it("sparse", function() {
+		var a = [];
+		var b = [];
+
+		a[3000] = "1";
+		b[3000] = "1";
+		expect(diff.match(a, b)).to.be(true);
+
+		b[3000] = "X";
+		expect(diff.match(a, b)).to.be(false);
+
+		b = [];
+		b[10] = "1";
+		expect(diff.match(a, b)).to.be(false);
+	});
+
 });
