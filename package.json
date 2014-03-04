@@ -1,0 +1,29 @@
+{
+  "name": "big-object-diff",
+  "version": "0.0.0",
+  "engines": {
+    "node": ">=0.10"
+  },
+  "description": "A tool for visualizing the differences between large JavaScript objects",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jake"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamesshore/big-object-diff"
+  },
+  "keywords": [
+    "diff"
+  ],
+  "author": "James Shore",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jamesshore/big-object-diff/issues"
+  },
+  "homepage": "https://github.com/jamesshore/big-object-diff",
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
