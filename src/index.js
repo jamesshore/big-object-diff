@@ -6,7 +6,14 @@ var INDENT_TEXT = "  ";
 exports.renderDiff = function(expected, actual) {
 	if (exports.match(expected, actual)) return "";
 
-	return render(actual) + "   // expected " + render(expected);
+	var renderedActual = render(actual);
+	var renderedExpected = render(expected);
+
+	if (typeof expected === "function" && typeof actual === "function") {
+		if (renderedActual === renderedExpected) renderedExpected = "different " + renderedExpected;
+	}
+
+	return renderedActual + "   // expected " + renderedExpected;
 };
 
 var render = exports.render = function(obj) {

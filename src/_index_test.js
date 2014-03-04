@@ -12,6 +12,15 @@ describe("renders differences for", function() {
 	it("flat types", function() {
 		expect(diff.renderDiff("a", "b")).to.equal('"b"   // expected "a"');
 	});
+
+	it("functions", function() {
+		var anon1 = function() {};
+		var anon2 = function() {};
+		var b = function b() {};
+
+		expect(diff.renderDiff(anon1, b)).to.equal("b()   // expected <anon>()");
+		expect(diff.renderDiff(anon1, anon2)).to.equal("<anon>()   // expected different <anon>()");
+	});
 });
 
 describe("renders", function() {
