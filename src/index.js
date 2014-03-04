@@ -3,11 +3,16 @@
 
 var INDENT_TEXT = "  ";
 
+exports.renderDiff = function(expected, actual) {
+	return "";
+};
+
 exports.render = function(obj) {
 	return renderWithIndent("", obj);
 };
 
 function renderWithIndent(indent, obj) {
+	if (Array.isArray(obj)) return arrayRender(indent, obj);
 	if (typeof obj === "object") return objectRender(indent, obj);
 	else return flatRender(obj);
 }
@@ -22,18 +27,27 @@ function flatRender(obj) {
 
 	return obj.toString();
 }
+function arrayRender(indent, obj) {
+	if (obj.length === 0) return "[]";
 
-function objectRender(oldIndent, obj) {
+	return "[" + renderProperties(indent, obj, true) + "]";
+}
+
+function objectRender(indent, obj) {
 	if (obj === null) return "null";
+	if (Object.getOwnPropertyNames(obj).length === 0) return "{}";
 
+	return "{" + renderProperties(indent, obj, false) + "}";
+}
+
+function renderProperties(indent, obj, ignoreLengthProperty) {
+	var newIndent = indent + INDENT_TEXT;
 	var keys = Object.getOwnPropertyNames(obj);
-	if (keys.length === 0) return "{}";
-
-	var newIndent = oldIndent + INDENT_TEXT;
 	var properties = keys.reduce(function(accumulated, key) {
+		if (ignoreLengthProperty && key === "length") return accumulated;
 		return accumulated + "\n" + newIndent + key + ": " + renderWithIndent(newIndent, obj[key]);
 	}, "");
-	return "{" + properties + "\n" + oldIndent + "}";
+	return properties + "\n" + indent;
 }
 
 exports.match = function(a, b) {

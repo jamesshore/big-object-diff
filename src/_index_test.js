@@ -4,8 +4,17 @@
 var expect = require("expect.js");
 var diff = require("./index.js");
 
+//describe("renders differences for", function() {
+//	it("matching values", function() {
+//		expect(diff.renderDiff(1, 1)).to.equal("");
+//	});
+//
+//	it("flat types", function() {
+//		expect(diff.renderDiff(1, 2)).to.equal("2   // expected 1");
+//	});
+//});
 
-describe("render", function() {
+describe("renders", function() {
 
 	describe("flat types:", function() {
 		it("undefined", function() {
@@ -57,6 +66,10 @@ describe("render", function() {
 			);
 		});
 
+		it("with 'length' property", function() {
+			expect(diff.render({ length: 3 })).to.equal("{\n  length: 3\n}");
+		});
+
 		it("nested", function() {
 			expect(diff.render({ a: 1, b: { b1: 2, b2: 3 } })).to.equal(
 				"{\n" +
@@ -70,9 +83,49 @@ describe("render", function() {
 		});
 	});
 
+	describe("arrays:", function() {
+		it("empty", function() {
+			expect(diff.render([])).to.equal("[]");
+		});
+
+		it("flat", function() {
+			expect(diff.render([1, 2, 3])).to.equal(
+				"[\n" +
+				"  0: 1\n" +
+				"  1: 2\n" +
+				"  2: 3\n" +
+				"]"
+			);
+		});
+
+		it("sparse", function() {
+			var a = [];
+			a[3000] = 1;
+
+			expect(diff.render(a)).to.equal(
+				"[\n" +
+				"  3000: 1\n" +
+				"]"
+			);
+		});
+
+		it("nested and mixed", function() {
+			expect(diff.render([ 1, { a: [ 2, 3 ] }])).to.equal(
+				"[\n" +
+				"  0: 1\n" +
+				"  1: {\n" +
+				"    a: [\n" +
+				"      0: 2\n" +
+				"      1: 3\n" +
+				"    ]\n" +
+				"  }\n" +
+				"]"
+			);
+		});
+	});
 });
 
-describe("match", function() {
+describe("matches", function() {
 
 	describe("flat types:", function() {
 		it("undefined", function() {
