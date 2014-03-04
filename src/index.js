@@ -4,10 +4,12 @@
 var INDENT_TEXT = "  ";
 
 exports.renderDiff = function(expected, actual) {
-	return "";
+	if (exports.match(expected, actual)) return "";
+
+	return render(actual) + "   // expected " + render(expected);
 };
 
-exports.render = function(obj) {
+var render = exports.render = function(obj) {
 	return renderWithIndent("", obj);
 };
 

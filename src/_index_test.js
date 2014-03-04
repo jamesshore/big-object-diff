@@ -4,15 +4,15 @@
 var expect = require("expect.js");
 var diff = require("./index.js");
 
-//describe("renders differences for", function() {
-//	it("matching values", function() {
-//		expect(diff.renderDiff(1, 1)).to.equal("");
-//	});
-//
-//	it("flat types", function() {
-//		expect(diff.renderDiff(1, 2)).to.equal("2   // expected 1");
-//	});
-//});
+describe("renders differences for", function() {
+	it("matching values", function() {
+		expect(diff.renderDiff(1, 1)).to.equal("");
+	});
+
+	it("flat types", function() {
+		expect(diff.renderDiff("a", "b")).to.equal('"b"   // expected "a"');
+	});
+});
 
 describe("renders", function() {
 
