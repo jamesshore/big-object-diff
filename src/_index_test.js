@@ -45,8 +45,37 @@ describe("renders differences for", function() {
 			);
 		});
 
-		it("compared to arrays", function() {
+		it("compared to empty arrays and objects", function() {
 			expect(diff.renderDiff([], {})).to.equal("{}   // expected []");
+			expect(diff.renderDiff({}, [])).to.equal("[]   // expected {}");
+
+			expect(diff.renderDiff([], { a: 1 })).to.equal(
+				"// expected [] but got:\n" +
+				"  {\n" +
+				"    a: 1\n" +
+				"  }"
+			);
+
+			expect(diff.renderDiff({ a: 1 }, [])).to.equal(
+				"[]   // expected:\n" +
+				"  {\n" +
+				"    a: 1\n" +
+				"  }"
+			);
+
+			expect(diff.renderDiff({}, [ 1 ])).to.equal(
+				"// expected {} but got:\n" +
+				"  [\n" +
+				"    0: 1\n" +
+				"  ]"
+			);
+
+			expect(diff.renderDiff([ 1 ], {})).to.equal(
+				"{}   // expected:\n" +
+				"  [\n" +
+				"    0: 1\n" +
+				"  ]"
+			);
 		});
 
 		it("different values", function() {
