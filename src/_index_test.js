@@ -267,6 +267,10 @@ describe("renders", function() {
 			expect(diff.render("")).to.equal('""');
 			expect(diff.render("foo")).to.equal('"foo"');
 			expect(diff.render("\t\tfoo\n\n")).to.equal('"\\t\\tfoo\\n\\n"');
+			expect(diff.render('1234567890123456789012345678901234567890123456789012345678901234567890'))
+				.to.equal('"12345678901234567890123456789012345678901234567890123456789"...');
+			expect(diff.render('12345678901234567890123456789012345678901234567890123456789'))
+				.to.equal('"12345678901234567890123456789012345678901234567890123456789"');
 		});
 
 		it("number", function() {

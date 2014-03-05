@@ -105,7 +105,11 @@ function renderWithIndent(indent, obj, collapseObjects) {
 function flatRender(obj) {
 	if (obj === undefined) return "undefined";
 	if (obj === null) return "null";
-	if (typeof obj === "string") return JSON.stringify(obj);
+	if (typeof obj === "string") {
+		var str = JSON.stringify(obj);
+		if (str.length > 61) str = str.substr(0, 60) + '"...';    // >61, not >60, because of trailing quote
+		return str;
+	}
 	if (isArray(obj)) {
 		if (obj.length === 0) return "[]";
 		return "[...]";
