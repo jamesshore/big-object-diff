@@ -70,11 +70,37 @@ describe("renders differences for", function() {
 			);
 		});
 
+		it("missing properties", function() {
+			expect(diff.renderDiff({ a: 1, b: 2, c: 3 }, { a: 1 })).to.equal(
+				"{\n" +
+				"  // missing properties:\n" +
+				"    b: 2\n" +
+				"    c: 3\n" +
+				"}"
+			);
+		});
+
+		it("all kinds of changes", function() {
+			expect(diff.renderDiff({ a: 1, b: 2 }, { a: 99, c: 3 })).to.equal(
+				"{\n" +
+				"  a: 99   // expected 1\n" +
+				"  // missing properties:\n" +
+				"    b: 2\n" +
+				"  // extra properties:\n" +
+				"    c: 3\n" +
+				"}"
+			);
+		});
+
+		// TODO: simplify by using single loop
+	});
+
+	describe("nested objects:", function() {
+
+
 		it("non-object comparison respects indent");
 
 		it("compared to arrays");
-
-		it("multiple keys");
 
 	});
 });

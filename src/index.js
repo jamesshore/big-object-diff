@@ -22,12 +22,14 @@ function flatRenderDiff(expected, actual) {
 }
 
 function objectRenderDiff(expected, actual) {
+	var indent = INDENT_TEXT;
+
 	if (expected === null || actual === null) return flatRenderDiff(expected, actual);
 	if (typeof expected !== "object") {
-		return "// expected " + exports.render(expected) + " but got:\n" + INDENT_TEXT + renderWithIndent(INDENT_TEXT, actual);
+		return "// expected " + exports.render(expected) + " but got:\n" + indent + renderWithIndent(indent, actual);
 	}
 	if (typeof actual !== "object") {
-		return exports.render(actual) + "   // expected:\n" + INDENT_TEXT + renderWithIndent(INDENT_TEXT, expected);
+		return exports.render(actual) + "   // expected:\n" + indent + renderWithIndent(indent, expected);
 	}
 
 
@@ -35,10 +37,11 @@ function objectRenderDiff(expected, actual) {
 	var actualKeys = Object.getOwnPropertyNames(actual);
 
 	var mismatchedProperties = expectedKeys.reduce(function(accumulated, key) {
+		if (!actual.hasOwnProperty(key)) return accumulated;
 		var diff = exports.renderDiff(expected[key], actual[key]);
 		if (!diff) return accumulated;
 
-		return accumulated + "\n" + INDENT_TEXT + key + ": " + diff;
+		return accumulated + "\n" + indent + key + ": " + diff;
 	}, "");
 
 
@@ -46,11 +49,20 @@ function objectRenderDiff(expected, actual) {
 		return (!expected.hasOwnProperty(key));
 	});
 	var extraProperties = extraKeys.reduce(function(accumulated, key) {
-		return accumulated + "\n" + INDENT_TEXT + INDENT_TEXT + key + ": " + exports.render(actual[key]);
+		return accumulated + "\n" + indent + INDENT_TEXT + key + ": " + exports.render(actual[key]);
 	}, "");
-	if (extraProperties) extraProperties = "\n" + INDENT_TEXT + "// extra properties:" + extraProperties;
+	if (extraProperties) extraProperties = "\n" + indent + "// extra properties:" + extraProperties;
 
-	return "{" + mismatchedProperties + extraProperties + "\n}";
+
+	var missingKeys = expectedKeys.filter(function(key) {
+		return (!actual.hasOwnProperty(key));
+	});
+	var missingProperties = missingKeys.reduce(function(accumulated, key) {
+		return accumulated + "\n" + indent + INDENT_TEXT + key + ": " + exports.render(expected[key]);
+	}, "");
+	if (missingProperties) missingProperties = "\n" + indent + "// missing properties:" + missingProperties;
+
+	return "{" + mismatchedProperties + missingProperties + extraProperties + "\n}";
 }
 
 exports.render = function(obj) {
