@@ -4,7 +4,7 @@
   "engines": {
     "node": ">=0.10"
   },
-  "description": "A tool for visualizing the differences between large JavaScript objects",
+  "description": "A tool for visualizing the differences between large JavaScript objects.",
   "main": "src/index.js",
   "scripts": {
     "test": "jake"
