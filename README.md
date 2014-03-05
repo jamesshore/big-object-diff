@@ -35,6 +35,8 @@ Deep compare two objects and return `true` if they are the same, `false` if not.
 
 ## Version History
 
+* 0.7.0 long strings are truncated
+
 * 0.6.0 renderDiff() collapses objects as much as possible
 
 * 0.5.0 Initial release
@@ -43,7 +45,7 @@ Deep compare two objects and return `true` if they are the same, `false` if not.
 
 The MIT License (MIT)
 
-Copyright (c) 2012-2014 James Shore
+Copyright (c) 2014 James Shore
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
