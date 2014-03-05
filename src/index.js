@@ -75,7 +75,7 @@ function objectRenderDiff(oldIndent, expected, actual) {
 
 	function propertyBlock(obj, keys, title) {
 		if (keys.length === 0) return "";
-		return "\n" + indent + "// " + title + ":" + renderProperties(indent, obj, keys, false);
+		return "\n" + indent + "// " + title + ":" + renderProperties(oldIndent, obj, keys, false);
 	}
 }
 

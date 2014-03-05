@@ -64,8 +64,8 @@ describe("renders differences for", function() {
 			expect(diff.renderDiff({ a: 1, b: 2 }, { a: 1, b: 2, c: 3, d: 4 })).to.equal(
 				"{\n" +
 				"  // extra properties:\n" +
-				"    c: 3\n" +
-				"    d: 4\n" +
+				"  c: 3\n" +
+				"  d: 4\n" +
 				"}"
 			);
 		});
@@ -74,8 +74,8 @@ describe("renders differences for", function() {
 			expect(diff.renderDiff({ a: 1, b: 2, c: 3 }, { a: 1 })).to.equal(
 				"{\n" +
 				"  // missing properties:\n" +
-				"    b: 2\n" +
-				"    c: 3\n" +
+				"  b: 2\n" +
+				"  c: 3\n" +
 				"}"
 			);
 		});
@@ -96,10 +96,10 @@ describe("renders differences for", function() {
 				"  a: 99   // expected 1\n" +
 				"  b: {\n" +
 				"    // extra properties:\n" +
-				"      b2: 3\n" +
+				"    b2: 3\n" +
 				"  }\n" +
 				"  // missing properties:\n" +
-				"    c: 3\n" +
+				"  c: 3\n" +
 				"}"
 			);
 		});
