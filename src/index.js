@@ -15,42 +15,21 @@ function renderDiffWithIndent(indent, expected, actual) {
 	var expectedIsObject = (typeof expected === "object") && !expectedIsArray;
 	var actualIsObject = (typeof actual === "object") && !actualIsArray;
 
-	if (expectedIsArray && actualIsObject || expectedIsObject && actualIsArray) {
-		return arrayObjectRenderDiff(indent, expected, actual);
-	}
+	if (expectedIsArray && actualIsObject || expectedIsObject && actualIsArray) return flatRenderDiff(expected, actual);
 	if (expectedIsArray || actualIsArray) return arrayRenderDiff(indent, expected, actual);
 	if (actualIsObject || expectedIsObject) return objectRenderDiff(indent, expected, actual);
 	else return flatRenderDiff(expected, actual);
 }
 
 function flatRenderDiff(expected, actual) {
-	var renderedActual = exports.render(actual);
-	var renderedExpected = exports.render(expected);
+	var renderedActual = flatRender(actual);
+	var renderedExpected = flatRender(expected);
 
 	if (typeof expected === "function" && typeof actual === "function") {
 		if (renderedActual === renderedExpected) renderedExpected = "different " + renderedExpected;
 	}
 
 	return renderedActual + "   // expected " + renderedExpected;
-}
-
-function arrayObjectRenderDiff(oldIndent, expected, actual) {
-	var indent = oldIndent + INDENT_TEXT;
-
-	if (Array.isArray(expected)) {
-		if (expected.length === 0) return objectRenderDiff(oldIndent, expected, actual);
-		if (Object.getOwnPropertyNames(actual).length === 0) return arrayRenderDiff(oldIndent, expected, actual);
-
-		return "// expected array:\n" + indent + renderWithIndent(indent, expected) +
-			"\n" + oldIndent + "// but got object:\n" + indent + renderWithIndent(indent, actual);
-	}
-	else {
-		if (actual.length === 0) return objectRenderDiff(oldIndent, expected, actual);
-		if (Object.getOwnPropertyNames(expected).length === 0) return arrayRenderDiff(oldIndent, expected, actual);
-
-		return "// expected object:\n" + indent + renderWithIndent(indent, expected) +
-			"\n" + oldIndent + "// but got array:\n" + indent + renderWithIndent(indent, actual);
-	}
 }
 
 function arrayRenderDiff(oldIndent, expected, actual) {
@@ -72,10 +51,12 @@ function objectRenderDiff(oldIndent, expected, actual) {
 	var indent = oldIndent + INDENT_TEXT;
 
 	if (expected === null || actual === null) return flatRenderDiff(expected, actual);
+	if (typeof expected !== "object" && !Array.isArray(expected)) return flatRenderDiff(expected, actual);
 	if (typeof expected !== "object" || Array.isArray(expected)) {
 		if (Object.getOwnPropertyNames(actual).length === 0) return flatRenderDiff(expected, actual);
 		return "// expected " + exports.render(expected) + " but got:\n" + indent + renderWithIndent(indent, actual);
 	}
+	if (typeof actual !== "object" && !Array.isArray(actual)) return flatRenderDiff(expected, actual);
 	if (typeof actual !== "object" || Array.isArray(actual)) {
 		if (Object.getOwnPropertyNames(expected).length === 0) return flatRenderDiff(expected, actual);
 		return exports.render(actual) + "   // expected:\n" + indent + renderWithIndent(indent, expected);

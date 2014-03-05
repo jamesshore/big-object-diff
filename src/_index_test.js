@@ -30,20 +30,15 @@ describe("renders differences for", function() {
 			expect(diff.renderDiff(99, {})).to.equal("{}   // expected 99");
 			expect(diff.renderDiff({}, 99)).to.equal("99   // expected {}");
 
-			expect(diff.renderDiff(99, { a: 1 })).to.equal(
-				"// expected 99 but got:\n" +
-				"  {\n" +
-				"    a: 1\n" +
-				"  }"
-			);
+			expect(diff.renderDiff({ a: {} }, null)).to.equal("null   // expected {...}");
+			expect(diff.renderDiff(null, { a: {} })).to.equal("{...}   // expected null");
 
-			expect(diff.renderDiff({ a: 1 }, 99)).to.equal(
-				"99   // expected:\n" +
-				"  {\n" +
-				"    a: 1\n" +
-				"  }"
-			);
+			expect(diff.renderDiff(99, { a: {} })).to.equal("{...}   // expected 99");
+			expect(diff.renderDiff({ a: {} }, 99)).to.equal("99   // expected {...}");
 		});
+
+		// TODO: simplify objectRenderDiff and arrayRenderDiff
+
 
 		it("different values", function() {
 			expect(diff.renderDiff({ a: 1, b: 2, c: 3 }, { a: 100, b: 200, c: 300 })).to.equal(
@@ -149,19 +144,11 @@ describe("renders differences for", function() {
 			expect(diff.renderDiff(99, [])).to.equal("[]   // expected 99");
 			expect(diff.renderDiff([], 99)).to.equal("99   // expected []");
 
-			expect(diff.renderDiff(99, [ 1 ])).to.equal(
-				"// expected 99 but got:\n" +
-				"  [\n" +
-				"    0: 1\n" +
-				"  ]"
-			);
+			expect(diff.renderDiff([ [] ], null)).to.equal("null   // expected [...]");
+			expect(diff.renderDiff(null, { a: {} })).to.equal("{...}   // expected null");
 
-			expect(diff.renderDiff([ 1 ], 99)).to.equal(
-				"99   // expected:\n" +
-				"  [\n" +
-				"    0: 1\n" +
-				"  ]"
-			);
+			expect(diff.renderDiff(99, { a: {} })).to.equal("{...}   // expected 99");
+			expect(diff.renderDiff({ a: {} }, 99)).to.equal("99   // expected {...}");
 		});
 
 		it("different values", function() {
@@ -244,64 +231,21 @@ describe("renders differences for", function() {
 	});
 
 	describe("arrays and objects compared:", function() {
-
 		it("both empty", function() {
 			expect(diff.renderDiff([], {})).to.equal("{}   // expected []");
 			expect(diff.renderDiff({}, [])).to.equal("[]   // expected {}");
 		});
 
 		it("one empty", function() {
-			expect(diff.renderDiff([], { a: 1 })).to.equal(
-				"// expected [] but got:\n" +
-				"  {\n" +
-				"    a: 1\n" +
-				"  }"
-			);
-
-			expect(diff.renderDiff({ a: 1 }, [])).to.equal(
-				"[]   // expected:\n" +
-				"  {\n" +
-				"    a: 1\n" +
-				"  }"
-			);
-
-			expect(diff.renderDiff({}, [ 1 ])).to.equal(
-				"// expected {} but got:\n" +
-				"  [\n" +
-				"    0: 1\n" +
-				"  ]"
-			);
-
-			expect(diff.renderDiff([ 1 ], {})).to.equal(
-				"{}   // expected:\n" +
-				"  [\n" +
-				"    0: 1\n" +
-				"  ]"
-			);
+			expect(diff.renderDiff([], { a: 1 })).to.equal("{...}   // expected []");
+			expect(diff.renderDiff({ a: 1 }, [])).to.equal("[]   // expected {...}");
+			expect(diff.renderDiff({}, [ 1 ])).to.equal("[...]   // expected {}");
+			expect(diff.renderDiff([ 1 ], {})).to.equal("{}   // expected [...]");
 		});
 
 		it("neither empty", function() {
-			expect(diff.renderDiff({ a: 1 }, [ 2 ])).to.equal(
-				"// expected object:\n" +
-				"  {\n" +
-				"    a: 1\n" +
-				"  }\n" +
-				"// but got array:\n" +
-				"  [\n" +
-				"    0: 2\n" +
-				"  ]"
-			);
-
-			expect(diff.renderDiff([ 1 ], { a: 2 })).to.equal(
-				"// expected array:\n" +
-				"  [\n" +
-				"    0: 1\n" +
-				"  ]\n" +
-				"// but got object:\n" +
-				"  {\n" +
-				"    a: 2\n" +
-				"  }"
-			);
+			expect(diff.renderDiff({ a: 1 }, [ 2 ])).to.equal("[...]   // expected {...}");
+			expect(diff.renderDiff([ 1 ], { a: 2 })).to.equal("{...}   // expected [...]");
 		});
 	});
 });
