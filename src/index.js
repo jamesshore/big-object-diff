@@ -30,9 +30,11 @@ function objectRenderDiff(oldIndent, expected, actual) {
 
 	if (expected === null || actual === null) return flatRenderDiff(expected, actual);
 	if (typeof expected !== "object") {
+		if (Object.getOwnPropertyNames(actual).length === 0) return flatRenderDiff(expected, actual);
 		return "// expected " + exports.render(expected) + " but got:\n" + indent + renderWithIndent(indent, actual);
 	}
 	if (typeof actual !== "object") {
+		if (Object.getOwnPropertyNames(expected).length === 0) return flatRenderDiff(expected, actual);
 		return exports.render(actual) + "   // expected:\n" + indent + renderWithIndent(indent, expected);
 	}
 

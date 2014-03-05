@@ -26,7 +26,9 @@ describe("renders differences for", function() {
 	});
 
 	describe("objects:", function() {
-		it("compared to non-objects", function() {
+		it("compared to flat types", function() {
+			expect(diff.renderDiff(99, {})).to.equal("{}   // expected 99");
+
 			expect(diff.renderDiff(99, { a: 1 })).to.equal(
 				"// expected 99 but got:\n" +
 				"  {\n" +
@@ -40,6 +42,11 @@ describe("renders differences for", function() {
 				"    a: 1\n" +
 				"  }"
 			);
+		});
+
+		it("compared to arrays", function() {
+//			expect(diff.renderDiff({}, [])).to.equal()
+			//TODO
 		});
 
 		it("different values", function() {
@@ -105,13 +112,8 @@ describe("renders differences for", function() {
 		});
 	});
 
-	describe("nested objects:", function() {
-
-
-		it("non-object comparison respects indent");
-
-		it("compared to arrays");
-
+	describe("arrays:", function() {
+		//TODO
 	});
 });
 
