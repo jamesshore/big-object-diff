@@ -80,13 +80,25 @@ describe("renders differences for", function() {
 			);
 		});
 
-		it("all kinds of changes", function() {
-			expect(diff.renderDiff({ a: 1, b: 2 }, { a: 99, c: 3 })).to.equal(
+		it("compares nested objects", function() {
+			expect(diff.renderDiff({ a: { b: 1 }}, { a: { b: 99 }})).to.equal(
+				"{\n" +
+				"  a: {\n" +
+				"    b: 99   // expected 1\n" +
+				"  }\n" +
+				"}"
+			);
+		});
+
+		it("complex comparison", function() {
+			expect(diff.renderDiff({ a: 1, b: { b1: 2 }, c: 3 }, { a: 99, b: { b1: 2, b2: 3 } })).to.equal(
 				"{\n" +
 				"  a: 99   // expected 1\n" +
+				"  b: {\n" +
+				"    // extra properties:\n" +
+				"      b2: 3\n" +
+				"  }\n" +
 				"  // missing properties:\n" +
-				"    b: 2\n" +
-				"  // extra properties:\n" +
 				"    c: 3\n" +
 				"}"
 			);

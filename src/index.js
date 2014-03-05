@@ -4,11 +4,15 @@
 var INDENT_TEXT = "  ";
 
 exports.renderDiff = function(expected, actual) {
+	return renderDiffWithIndent("", expected, actual);
+};
+
+function renderDiffWithIndent(indent, expected, actual) {
 	if (exports.match(expected, actual)) return "";
 
-	if (typeof actual === "object" || typeof expected === "object") return objectRenderDiff(expected, actual);
+	if (typeof actual === "object" || typeof expected === "object") return objectRenderDiff(indent, expected, actual);
 	else return flatRenderDiff(expected, actual);
-};
+}
 
 function flatRenderDiff(expected, actual) {
 	var renderedActual = exports.render(actual);
@@ -21,8 +25,8 @@ function flatRenderDiff(expected, actual) {
 	return renderedActual + "   // expected " + renderedExpected;
 }
 
-function objectRenderDiff(expected, actual) {
-	var indent = INDENT_TEXT;
+function objectRenderDiff(oldIndent, expected, actual) {
+	var indent = oldIndent + INDENT_TEXT;
 
 	if (expected === null || actual === null) return flatRenderDiff(expected, actual);
 	if (typeof expected !== "object") {
@@ -37,7 +41,7 @@ function objectRenderDiff(expected, actual) {
 	var missingKeys = [];
 
 	analyzeKeys();
-	return "{" + mismatchedProperties() + missingProperties() + extraProperties() + "\n}";
+	return "{" + mismatchedProperties() + missingProperties() + extraProperties() + "\n" + oldIndent + "}";
 
 	function analyzeKeys() {
 		var expectedKeys = Object.getOwnPropertyNames(expected);
@@ -54,7 +58,7 @@ function objectRenderDiff(expected, actual) {
 
 	function mismatchedProperties() {
 		return unionKeys.reduce(function(accumulated, key) {
-			var diff = exports.renderDiff(expected[key], actual[key]);
+			var diff = renderDiffWithIndent(indent, expected[key], actual[key]);
 			if (!diff) return accumulated;
 
 			return accumulated + "\n" + indent + key + ": " + diff;
