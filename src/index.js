@@ -10,6 +10,7 @@ exports.renderDiff = function(expected, actual) {
 function renderDiffWithIndent(indent, expected, actual) {
 	if (exports.match(expected, actual)) return "";
 
+	if (Array.isArray(expected) || Array.isArray(actual)) return arrayRenderDiff(indent, expected, actual);
 	if (typeof actual === "object" || typeof expected === "object") return objectRenderDiff(indent, expected, actual);
 	else return flatRenderDiff(expected, actual);
 }
@@ -23,6 +24,19 @@ function flatRenderDiff(expected, actual) {
 	}
 
 	return renderedActual + "   // expected " + renderedExpected;
+}
+
+function arrayRenderDiff(oldIndent, expected, actual) {
+	var indent = oldIndent + INDENT_TEXT;
+
+	if (!Array.isArray(expected)) {
+		if (actual.length === 0) return flatRenderDiff(expected, actual);
+		return "// expected " + exports.render(expected) + " but got:\n" + indent + renderWithIndent(indent, actual);
+	}
+	if (!Array.isArray(actual)) {
+		if (expected.length === 0) return flatRenderDiff(expected, actual);
+		return exports.render(actual) + "   // expected:\n" + indent + renderWithIndent(indent, expected);
+	}
 }
 
 function objectRenderDiff(oldIndent, expected, actual) {
