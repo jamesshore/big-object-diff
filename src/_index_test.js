@@ -43,11 +43,31 @@ describe("renders differences for", function() {
 		});
 
 		it("different values", function() {
-//			expect(diff.renderDiff({ a: 1 }, { a: false })).to.equal(
-//				"{\n" +
-//				"  a: false   // expected 1\n" +
-//				"}"
-//			);
+			expect(diff.renderDiff({ a: 1, b: 2, c: 3 }, { a: 100, b: 200, c: 300 })).to.equal(
+				"{\n" +
+				"  a: 100   // expected 1\n" +
+				"  b: 200   // expected 2\n" +
+				"  c: 300   // expected 3\n" +
+				"}"
+			);
+		});
+
+		it("elides identical properties", function() {
+			expect(diff.renderDiff({ a: 1, b: 2, c: 3 }, { a: 1, b: "X", c: 3 })).to.equal(
+				"{\n" +
+				'  b: "X"   // expected 2\n' +
+				"}"
+			);
+		});
+
+		it("extra properties", function() {
+			expect(diff.renderDiff({ a: 1, b: 2 }, { a: 1, b: 2, c: 3, d: 4 })).to.equal(
+				"{\n" +
+				"  // extra properties:\n" +
+				"    c: 3\n" +
+				"    d: 4\n" +
+				"}"
+			);
 		});
 
 		it("non-object comparison respects indent");
@@ -56,7 +76,6 @@ describe("renders differences for", function() {
 
 		it("multiple keys");
 
-		it("elides identical properties");
 	});
 });
 

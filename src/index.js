@@ -30,7 +30,27 @@ function objectRenderDiff(expected, actual) {
 		return exports.render(actual) + "   // expected:\n" + INDENT_TEXT + renderWithIndent(INDENT_TEXT, expected);
 	}
 
-	return "";
+
+	var expectedKeys = Object.getOwnPropertyNames(expected);
+	var actualKeys = Object.getOwnPropertyNames(actual);
+
+	var mismatchedProperties = expectedKeys.reduce(function(accumulated, key) {
+		var diff = exports.renderDiff(expected[key], actual[key]);
+		if (!diff) return accumulated;
+
+		return accumulated + "\n" + INDENT_TEXT + key + ": " + diff;
+	}, "");
+
+
+	var extraKeys = actualKeys.filter(function(key) {
+		return (!expected.hasOwnProperty(key));
+	});
+	var extraProperties = extraKeys.reduce(function(accumulated, key) {
+		return accumulated + "\n" + INDENT_TEXT + INDENT_TEXT + key + ": " + exports.render(actual[key]);
+	}, "");
+	if (extraProperties) extraProperties = "\n" + INDENT_TEXT + "// extra properties:" + extraProperties;
+
+	return "{" + mismatchedProperties + extraProperties + "\n}";
 }
 
 exports.render = function(obj) {
@@ -53,6 +73,7 @@ function flatRender(obj) {
 
 	return obj.toString();
 }
+
 function arrayRender(indent, obj) {
 	if (obj.length === 0) return "[]";
 
