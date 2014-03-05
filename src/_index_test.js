@@ -128,8 +128,56 @@ describe("renders differences for", function() {
 			);
 		});
 
+		it("different values", function() {
+			expect(diff.renderDiff([ 1, 2, 3 ], [ 100, 200, 300 ])).to.equal(
+				"[\n" +
+				"  0: 100   // expected 1\n" +
+				"  1: 200   // expected 2\n" +
+				"  2: 300   // expected 3\n" +
+				"]"
+			);
+		});
 
-		it("compared to arrays");
+		it("elides identical properties", function() {
+			expect(diff.renderDiff([ 1, 2, 3 ], [1, "X", 3 ])).to.equal(
+				"[\n" +
+				'  1: "X"   // expected 2\n' +
+				"]"
+			);
+		});
+
+//		it("extra properties", function() {
+//			expect(diff.renderDiff([ 1, 2 ], [ 1, 2, 3, 4 ])).to.equal(
+//				"[\n" +
+//				"  // extra properties:\n" +
+//				"  2: 3\n" +
+//				"  3: 4\n" +
+//				"]"
+//			);
+//		});
+
+		it("missing properties", function() {
+			expect(diff.renderDiff({ a: 1, b: 2, c: 3 }, { a: 1 })).to.equal(
+				"{\n" +
+				"  // missing properties:\n" +
+				"  b: 2\n" +
+				"  c: 3\n" +
+				"}"
+			);
+		});
+
+		it("compares nested objects", function() {
+			expect(diff.renderDiff({ a: { b: 1 }}, { a: { b: 99 }})).to.equal(
+				"{\n" +
+				"  a: {\n" +
+				"    b: 99   // expected 1\n" +
+				"  }\n" +
+				"}"
+			);
+		});
+
+
+		it("compared to objects");
 
 	});
 });
