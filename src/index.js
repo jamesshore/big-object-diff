@@ -10,8 +10,16 @@ exports.renderDiff = function(expected, actual) {
 function renderDiffWithIndent(indent, expected, actual) {
 	if (exports.match(expected, actual)) return "";
 
-	if (Array.isArray(expected) || Array.isArray(actual)) return arrayRenderDiff(indent, expected, actual);
-	if (typeof actual === "object" || typeof expected === "object") return objectRenderDiff(indent, expected, actual);
+	var expectedIsArray = Array.isArray(expected);
+	var actualIsArray = Array.isArray(actual);
+	var expectedIsObject = (typeof expected === "object");
+	var actualIsObject = (typeof actual === "object");
+
+	if (expectedIsArray && actualIsObject || expectedIsObject && actualIsArray) {
+		return arrayObjectRenderDiff(indent, expected, actual);
+	}
+	if (expectedIsArray || actualIsArray) return arrayRenderDiff(indent, expected, actual);
+	if (actualIsObject || expectedIsObject) return objectRenderDiff(indent, expected, actual);
 	else return flatRenderDiff(expected, actual);
 }
 
@@ -26,21 +34,26 @@ function flatRenderDiff(expected, actual) {
 	return renderedActual + "   // expected " + renderedExpected;
 }
 
+function arrayObjectRenderDiff(indent, expected, actual) {
+	if (Array.isArray(expected)) {
+		if (expected.length === 0) return objectRenderDiff(indent, expected, actual);
+	}
+	else {
+		if (actual.length === 0) return objectRenderDiff(indent, expected, actual);
+	}
+
+	return arrayRenderDiff(indent, expected, actual);
+}
+
 function arrayRenderDiff(oldIndent, expected, actual) {
 	var indent = oldIndent + INDENT_TEXT;
 
 	if (!Array.isArray(expected)) {
-		if (actual.length === 0) {
-			if (typeof expected === "object") return objectRenderDiff(oldIndent, expected, actual);
-			return flatRenderDiff(expected, actual);
-		}
+		if (actual.length === 0) return flatRenderDiff(expected, actual);
 		return "// expected " + exports.render(expected) + " but got:\n" + indent + renderWithIndent(indent, actual);
 	}
 	if (!Array.isArray(actual)) {
-		if (expected.length === 0) {
-			if (typeof actual === "object") return objectRenderDiff(oldIndent, expected, actual);
-			return flatRenderDiff(expected, actual);
-		}
+		if (expected.length === 0) return flatRenderDiff(expected, actual);
 		return exports.render(actual) + "   // expected:\n" + indent + renderWithIndent(indent, expected);
 	}
 

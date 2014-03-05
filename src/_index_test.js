@@ -45,39 +45,6 @@ describe("renders differences for", function() {
 			);
 		});
 
-		it("compared to empty arrays and objects", function() {
-			expect(diff.renderDiff([], {})).to.equal("{}   // expected []");
-			expect(diff.renderDiff({}, [])).to.equal("[]   // expected {}");
-
-			expect(diff.renderDiff([], { a: 1 })).to.equal(
-				"// expected [] but got:\n" +
-				"  {\n" +
-				"    a: 1\n" +
-				"  }"
-			);
-
-			expect(diff.renderDiff({ a: 1 }, [])).to.equal(
-				"[]   // expected:\n" +
-				"  {\n" +
-				"    a: 1\n" +
-				"  }"
-			);
-
-			expect(diff.renderDiff({}, [ 1 ])).to.equal(
-				"// expected {} but got:\n" +
-				"  [\n" +
-				"    0: 1\n" +
-				"  ]"
-			);
-
-			expect(diff.renderDiff([ 1 ], {})).to.equal(
-				"{}   // expected:\n" +
-				"  [\n" +
-				"    0: 1\n" +
-				"  ]"
-			);
-		});
-
 		it("different values", function() {
 			expect(diff.renderDiff({ a: 1, b: 2, c: 3 }, { a: 100, b: 200, c: 300 })).to.equal(
 				"{\n" +
@@ -196,6 +163,57 @@ describe("renders differences for", function() {
 				"    ]\n" +
 				"  }\n" +
 				"]"
+			);
+		});
+	});
+
+	describe("arrays and objects compared:", function() {
+
+		it("both empty", function() {
+			expect(diff.renderDiff([], {})).to.equal("{}   // expected []");
+			expect(diff.renderDiff({}, [])).to.equal("[]   // expected {}");
+		});
+
+		it("one empty", function() {
+			expect(diff.renderDiff([], { a: 1 })).to.equal(
+				"// expected [] but got:\n" +
+				"  {\n" +
+				"    a: 1\n" +
+				"  }"
+			);
+
+			expect(diff.renderDiff({ a: 1 }, [])).to.equal(
+				"[]   // expected:\n" +
+				"  {\n" +
+				"    a: 1\n" +
+				"  }"
+			);
+
+			expect(diff.renderDiff({}, [ 1 ])).to.equal(
+				"// expected {} but got:\n" +
+				"  [\n" +
+				"    0: 1\n" +
+				"  ]"
+			);
+
+			expect(diff.renderDiff([ 1 ], {})).to.equal(
+				"{}   // expected:\n" +
+				"  [\n" +
+				"    0: 1\n" +
+				"  ]"
+			);
+		});
+
+		it.skip("neither empty", function() {
+			expect(diff.renderDiff({ a: 1 }, [ 2 ])).to.equal(
+				"// expected object:\n" +
+				"  {\n" +
+				"    a: 1\n" +
+				"  }\n" +
+				"// but got array:\n" +
+				"  [\n" +
+				"    0: 2\n" +
+				"  ]"
 			);
 		});
 	});
