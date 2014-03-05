@@ -6,25 +6,21 @@ This tool provides the ability to compare large objects and output the results t
 
 1. It's rigorously tested.
 
-2. Elements that haven't changed aren't displayed.
+2. Elements that are the same aren't displayed.
 
 ## Example output
 
 ```
 {
-  ...
-  c: {
-    ...
-    c1: {
-      ...
-      c1d: [ 1, 2, 4 ]  // was [ 1, 2, 3 ]
-      ...
-    }
-    ...
+  a: 99   // expected 1
+  b: {
+    // extra properties:
+    b2: 3
   }
-  ...
+  // missing properties:
+  c: 3
 }
-
+```
 
 
 ## Version History
