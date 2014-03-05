@@ -22,11 +22,11 @@ This module provides the ability to compare large objects and output the results
 
 ### `renderDiff(expected, actual)`
 
-Deep compare one object to another and return the differences as a formatted string.
+Deep compare one object to another and return the differences as a formatted string, or "" if there are no differences.
 
 ### `render(obj)`
 
-Render an object and return the result as a formatted string.
+Render an object or other variable and return the result as a formatted string.
 
 ### `match(a, b)`
 
