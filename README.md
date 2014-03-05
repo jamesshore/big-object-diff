@@ -1,12 +1,8 @@
 # Big Object Diff
 
-A tool for visualizing the differences between large JavaScript objects.
+Visualize the differences between large JavaScript objects.
 
-This tool provides the ability to compare large objects and output the results to the console. The main difference between it and other tools is that:
-
-1. It's rigorously tested.
-
-2. Elements that are the same aren't displayed.
+This module provides the ability to compare large objects and output the results to the console. The main advantage of this module is that unchanged elements aren't displayed, making it suitable for comparing objects with hundreds of properties.
 
 ## Example output
 
@@ -22,10 +18,24 @@ This tool provides the ability to compare large objects and output the results t
 }
 ```
 
+## API
+
+### `renderDiff(expected, actual)`
+
+Deep compare one object to another and return the differences as a formatted string.
+
+### `render(obj)`
+
+Render an object and return the result as a formatted string.
+
+### `match(a, b)`
+
+Deep compare two objects and return `true` if they are the same, `false` if not.
+
 
 ## Version History
 
-TBD
+* 0.5.0 Initial release
 
 ## License
 
