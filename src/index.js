@@ -6,23 +6,40 @@ var INDENT_TEXT = "  ";
 exports.renderDiff = function(expected, actual) {
 	if (exports.match(expected, actual)) return "";
 
-	var renderedActual = render(actual);
-	var renderedExpected = render(expected);
+	if (typeof actual === "object" || typeof expected === "object") return objectRenderDiff(expected, actual);
+	else return flatRenderDiff(expected, actual);
+};
+
+function flatRenderDiff(expected, actual) {
+	var renderedActual = exports.render(actual);
+	var renderedExpected = exports.render(expected);
 
 	if (typeof expected === "function" && typeof actual === "function") {
 		if (renderedActual === renderedExpected) renderedExpected = "different " + renderedExpected;
 	}
 
 	return renderedActual + "   // expected " + renderedExpected;
-};
+}
 
-var render = exports.render = function(obj) {
+function objectRenderDiff(expected, actual) {
+	if (expected === null || actual === null) return flatRenderDiff(expected, actual);
+	if (typeof expected !== "object") {
+		return "// expected " + exports.render(expected) + " but got:\n" + INDENT_TEXT + renderWithIndent(INDENT_TEXT, actual);
+	}
+	if (typeof actual !== "object") {
+		return exports.render(actual) + "   // expected:\n" + INDENT_TEXT + renderWithIndent(INDENT_TEXT, expected);
+	}
+
+	return "";
+}
+
+exports.render = function(obj) {
 	return renderWithIndent("", obj);
 };
 
 function renderWithIndent(indent, obj) {
 	if (Array.isArray(obj)) return arrayRender(indent, obj);
-	if (typeof obj === "object") return objectRender(indent, obj);
+	else if (typeof obj === "object") return objectRender(indent, obj);
 	else return flatRender(obj);
 }
 

@@ -7,10 +7,13 @@ var diff = require("./index.js");
 describe("renders differences for", function() {
 	it("matching values", function() {
 		expect(diff.renderDiff(1, 1)).to.equal("");
+		expect(diff.renderDiff(null, null)).to.equal("");
 	});
 
 	it("flat types", function() {
 		expect(diff.renderDiff("a", "b")).to.equal('"b"   // expected "a"');
+		expect(diff.renderDiff(null, "b")).to.equal('"b"   // expected null');
+		expect(diff.renderDiff("a", null)).to.equal('null   // expected "a"');
 	});
 
 	it("functions", function() {
@@ -20,6 +23,40 @@ describe("renders differences for", function() {
 
 		expect(diff.renderDiff(anon1, b)).to.equal("b()   // expected <anon>()");
 		expect(diff.renderDiff(anon1, anon2)).to.equal("<anon>()   // expected different <anon>()");
+	});
+
+	describe("objects:", function() {
+		it("compared to non-objects", function() {
+			expect(diff.renderDiff(99, { a: 1 })).to.equal(
+				"// expected 99 but got:\n" +
+				"  {\n" +
+				"    a: 1\n" +
+				"  }"
+			);
+
+			expect(diff.renderDiff({ a: 1 }, 99)).to.equal(
+				"99   // expected:\n" +
+				"  {\n" +
+				"    a: 1\n" +
+				"  }"
+			);
+		});
+
+		it("different values", function() {
+//			expect(diff.renderDiff({ a: 1 }, { a: false })).to.equal(
+//				"{\n" +
+//				"  a: false   // expected 1\n" +
+//				"}"
+//			);
+		});
+
+		it("non-object comparison respects indent");
+
+		it("compared to arrays");
+
+		it("multiple keys");
+
+		it("elides identical properties");
 	});
 });
 
