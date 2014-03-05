@@ -19,8 +19,8 @@ function flatRenderDiff(expected, actual) {
 	var renderedActual = flatRender(actual);
 	var renderedExpected = flatRender(expected);
 
-	if (typeof expected === "function" && typeof actual === "function") {
-		if (renderedActual === renderedExpected) renderedExpected = "different " + renderedExpected;
+	if (isFunction(expected) && isFunction(actual) && renderedActual === renderedExpected) {
+		renderedExpected = "different " + renderedExpected;
 	}
 
 	return renderedActual + "   // expected " + renderedExpected;
@@ -98,7 +98,7 @@ exports.render = function(obj) {
 function renderWithIndent(indent, obj, collapseObjects) {
 	if (collapseObjects) return flatRender(obj);
 	else if (isArray(obj)) return arrayRender(indent, obj);
-	else if (typeof obj === "object") return objectRender(indent, obj);
+	else if (isObject(obj)) return objectRender(indent, obj);
 	else return flatRender(obj);
 }
 
@@ -110,11 +110,11 @@ function flatRender(obj) {
 		if (obj.length === 0) return "[]";
 		return "[...]";
 	}
-	if (typeof obj === "object") {
+	if (isObject(obj)) {
 		if (Object.getOwnPropertyNames(obj).length === 0) return "{}";
 		else return "{...}";
 	}
-	if (typeof obj === "function") {
+	if (isFunction(obj)) {
 		if (!obj.name) return "<anon>()";
 		else return obj.name + "()";
 	}
@@ -130,7 +130,6 @@ function arrayRender(indent, obj) {
 }
 
 function objectRender(indent, obj) {
-	if (obj === null) return "null";
 	if (Object.getOwnPropertyNames(obj).length === 0) return "{}";
 
 	var properties = renderProperties(indent, obj, Object.getOwnPropertyNames(obj), false, false);
@@ -147,7 +146,7 @@ function renderProperties(indent, obj, keys, ignoreLengthProperty, collapseObjec
 }
 
 exports.match = function(a, b) {
-	if (typeof a === "object" && typeof b === "object") return objectMatch(a, b);
+	if (typeof a === "object" && typeof b === "object") return objectAndArrayMatch(a, b);
 	else return flatMatch(a, b);
 };
 
@@ -157,7 +156,7 @@ function flatMatch(a, b) {
 	return a === b;
 }
 
-function objectMatch(a, b) {
+function objectAndArrayMatch(a, b) {
 	if (a === b) return true;
 	if (a === null) return b === null;
 	if (b === null) return a === null;
@@ -179,4 +178,8 @@ function isArray(obj) {
 
 function isObject(obj) {
 	return typeof obj === "object" && obj !== null && !isArray(obj);
+}
+
+function isFunction(obj) {
+	return typeof obj === "function";
 }

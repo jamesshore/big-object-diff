@@ -37,9 +37,6 @@ describe("renders differences for", function() {
 			expect(diff.renderDiff({ a: {} }, 99)).to.equal("99   // expected {...}");
 		});
 
-		// TODO: simplify objectRenderDiff and arrayRenderDiff
-
-
 		it("different values", function() {
 			expect(diff.renderDiff({ a: 1, b: 2, c: 3 }, { a: 100, b: 200, c: 300 })).to.equal(
 				"{\n" +
