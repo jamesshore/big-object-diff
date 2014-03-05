@@ -22,6 +22,7 @@ task("lint", function() {
 
 desc("Run tests");
 task("test", [], function() {
+	process.stdout.write("Testing: ");
 	var mocha = new Mocha({ui: "bdd"});
 	testFiles().forEach(mocha.addFile.bind(mocha));
 
