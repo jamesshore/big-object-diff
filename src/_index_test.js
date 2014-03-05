@@ -204,7 +204,7 @@ describe("renders differences for", function() {
 			);
 		});
 
-		it.skip("neither empty", function() {
+		it("neither empty", function() {
 			expect(diff.renderDiff({ a: 1 }, [ 2 ])).to.equal(
 				"// expected object:\n" +
 				"  {\n" +
@@ -214,6 +214,17 @@ describe("renders differences for", function() {
 				"  [\n" +
 				"    0: 2\n" +
 				"  ]"
+			);
+
+			expect(diff.renderDiff([ 1 ], { a: 2 })).to.equal(
+				"// expected array:\n" +
+				"  [\n" +
+				"    0: 1\n" +
+				"  ]\n" +
+				"// but got object:\n" +
+				"  {\n" +
+				"    a: 2\n" +
+				"  }"
 			);
 		});
 	});
