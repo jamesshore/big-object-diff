@@ -32,37 +32,47 @@ function objectRenderDiff(expected, actual) {
 		return exports.render(actual) + "   // expected:\n" + indent + renderWithIndent(indent, expected);
 	}
 
+	var unionKeys = [];
+	var extraKeys = [];
+	var missingKeys = [];
 
-	var expectedKeys = Object.getOwnPropertyNames(expected);
-	var actualKeys = Object.getOwnPropertyNames(actual);
+	analyzeKeys();
+	return "{" + mismatchedProperties() + missingProperties() + extraProperties() + "\n}";
 
-	var mismatchedProperties = expectedKeys.reduce(function(accumulated, key) {
-		if (!actual.hasOwnProperty(key)) return accumulated;
-		var diff = exports.renderDiff(expected[key], actual[key]);
-		if (!diff) return accumulated;
+	function analyzeKeys() {
+		var expectedKeys = Object.getOwnPropertyNames(expected);
+		var actualKeys = Object.getOwnPropertyNames(actual);
 
-		return accumulated + "\n" + indent + key + ": " + diff;
-	}, "");
+		expectedKeys.forEach(function(key) {
+			if (actual.hasOwnProperty(key)) unionKeys.push(key);
+			else missingKeys.push(key);
+		});
+		extraKeys = actualKeys.filter(function(key) {
+			return (!expected.hasOwnProperty(key));
+		});
+	}
 
+	function mismatchedProperties() {
+		return unionKeys.reduce(function(accumulated, key) {
+			var diff = exports.renderDiff(expected[key], actual[key]);
+			if (!diff) return accumulated;
 
-	var extraKeys = actualKeys.filter(function(key) {
-		return (!expected.hasOwnProperty(key));
-	});
-	var extraProperties = extraKeys.reduce(function(accumulated, key) {
-		return accumulated + "\n" + indent + INDENT_TEXT + key + ": " + exports.render(actual[key]);
-	}, "");
-	if (extraProperties) extraProperties = "\n" + indent + "// extra properties:" + extraProperties;
+			return accumulated + "\n" + indent + key + ": " + diff;
+		}, "");
+	}
 
+	function missingProperties() {
+		return propertyBlock(expected, missingKeys, "missing properties");
+	}
 
-	var missingKeys = expectedKeys.filter(function(key) {
-		return (!actual.hasOwnProperty(key));
-	});
-	var missingProperties = missingKeys.reduce(function(accumulated, key) {
-		return accumulated + "\n" + indent + INDENT_TEXT + key + ": " + exports.render(expected[key]);
-	}, "");
-	if (missingProperties) missingProperties = "\n" + indent + "// missing properties:" + missingProperties;
+	function extraProperties() {
+		return propertyBlock(actual, extraKeys, "extra properties");
+	}
 
-	return "{" + mismatchedProperties + missingProperties + extraProperties + "\n}";
+	function propertyBlock(obj, keys, title) {
+		if (keys.length === 0) return "";
+		return "\n" + indent + "// " + title + ":" + renderProperties(indent, obj, keys, false);
+	}
 }
 
 exports.render = function(obj) {
@@ -89,24 +99,25 @@ function flatRender(obj) {
 function arrayRender(indent, obj) {
 	if (obj.length === 0) return "[]";
 
-	return "[" + renderProperties(indent, obj, true) + "]";
+	var properties = renderProperties(indent, obj, Object.getOwnPropertyNames(obj), true);
+	return "[" + properties + "\n" + indent + "]";
 }
 
 function objectRender(indent, obj) {
 	if (obj === null) return "null";
 	if (Object.getOwnPropertyNames(obj).length === 0) return "{}";
 
-	return "{" + renderProperties(indent, obj, false) + "}";
+	var properties = renderProperties(indent, obj, Object.getOwnPropertyNames(obj), false);
+	return "{" + properties + "\n" + indent + "}";
 }
 
-function renderProperties(indent, obj, ignoreLengthProperty) {
+function renderProperties(indent, obj, keys, ignoreLengthProperty) {
 	var newIndent = indent + INDENT_TEXT;
-	var keys = Object.getOwnPropertyNames(obj);
 	var properties = keys.reduce(function(accumulated, key) {
 		if (ignoreLengthProperty && key === "length") return accumulated;
 		return accumulated + "\n" + newIndent + key + ": " + renderWithIndent(newIndent, obj[key]);
 	}, "");
-	return properties + "\n" + indent;
+	return properties;
 }
 
 exports.match = function(a, b) {

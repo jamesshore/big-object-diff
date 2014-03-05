@@ -91,8 +91,6 @@ describe("renders differences for", function() {
 				"}"
 			);
 		});
-
-		// TODO: simplify by using single loop
 	});
 
 	describe("nested objects:", function() {
