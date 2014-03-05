@@ -38,7 +38,7 @@ function arrayRenderDiff(oldIndent, expected, actual) {
 		return exports.render(actual) + "   // expected:\n" + indent + renderWithIndent(indent, expected);
 	}
 
-	return "[" + renderPropertiesDiff(oldIndent, expected, actual, false) + "\n" + oldIndent + "]";
+	return "[" + renderPropertiesDiff(oldIndent, expected, actual, true) + "\n" + oldIndent + "]";
 }
 
 function objectRenderDiff(oldIndent, expected, actual) {
@@ -82,6 +82,8 @@ function renderPropertiesDiff(oldIndent, expected, actual, ignoreLengthProperty)
 
 	function incorrectProperties() {
 		return unionKeys.reduce(function(accumulated, key) {
+			if (ignoreLengthProperty && key === "length") return accumulated;
+
 			var diff = renderDiffWithIndent(indent, expected[key], actual[key]);
 			if (!diff) return accumulated;
 

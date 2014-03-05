@@ -82,30 +82,6 @@ describe("renders differences for", function() {
 				"}"
 			);
 		});
-
-		it("compares nested objects", function() {
-			expect(diff.renderDiff({ a: { b: 1 }}, { a: { b: 99 }})).to.equal(
-				"{\n" +
-				"  a: {\n" +
-				"    b: 99   // expected 1\n" +
-				"  }\n" +
-				"}"
-			);
-		});
-
-		it("complex comparison", function() {
-			expect(diff.renderDiff({ a: 1, b: { b1: 2 }, c: 3 }, { a: 99, b: { b1: 2, b2: 3 } })).to.equal(
-				"{\n" +
-				"  a: 99   // expected 1\n" +
-				"  b: {\n" +
-				"    // extra properties:\n" +
-				"    b2: 3\n" +
-				"  }\n" +
-				"  // missing properties:\n" +
-				"  c: 3\n" +
-				"}"
-			);
-		});
 	});
 
 	describe("arrays:", function() {
@@ -146,27 +122,27 @@ describe("renders differences for", function() {
 			);
 		});
 
-//		it("extra properties", function() {
-//			expect(diff.renderDiff([ 1, 2 ], [ 1, 2, 3, 4 ])).to.equal(
-//				"[\n" +
-//				"  // extra properties:\n" +
-//				"  2: 3\n" +
-//				"  3: 4\n" +
-//				"]"
-//			);
-//		});
-
-		it("missing properties", function() {
-			expect(diff.renderDiff({ a: 1, b: 2, c: 3 }, { a: 1 })).to.equal(
-				"{\n" +
-				"  // missing properties:\n" +
-				"  b: 2\n" +
-				"  c: 3\n" +
-				"}"
+		it("extra properties", function() {
+			expect(diff.renderDiff([ 1, 2 ], [ 1, 2, 3, 4 ])).to.equal(
+				"[\n" +
+				"  // extra properties:\n" +
+				"  2: 3\n" +
+				"  3: 4\n" +
+				"]"
 			);
 		});
 
-		it("compares nested objects", function() {
+		it("missing properties", function() {
+			expect(diff.renderDiff([ 1, 2, 3 ], [ 1 ])).to.equal(
+				"[\n" +
+				"  // missing properties:\n" +
+				"  1: 2\n" +
+				"  2: 3\n" +
+				"]"
+			);
+		});
+
+		it("nested objects", function() {
 			expect(diff.renderDiff({ a: { b: 1 }}, { a: { b: 99 }})).to.equal(
 				"{\n" +
 				"  a: {\n" +
@@ -176,9 +152,17 @@ describe("renders differences for", function() {
 			);
 		});
 
-
-		it("compared to objects");
-
+		it("nested and mixed", function() {
+			expect(diff.renderDiff([ 1, { a: [ 2, 3 ] }], [ 1, { a: [ 2, 99 ] }])).to.equal(
+				"[\n" +
+				"  1: {\n" +
+				"    a: [\n" +
+				"      1: 99   // expected 3\n" +
+				"    ]\n" +
+				"  }\n" +
+				"]"
+			);
+		});
 	});
 });
 
