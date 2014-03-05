@@ -165,6 +165,7 @@ function flatMatch(a, b) {
 function objectMatch(a, b) {
 	if (a === b) return true;
 	if (a === null) return b === null;
+	if (b === null) return a === null;
 
 	if (!exports.match(Object.getPrototypeOf(a), Object.getPrototypeOf(b))) return false;
 

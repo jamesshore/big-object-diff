@@ -45,6 +45,10 @@ describe("renders differences for", function() {
 			);
 		});
 
+		it("compared to arrays", function() {
+			expect(diff.renderDiff([], {})).to.equal("{}   // expected []");
+		});
+
 		it("different values", function() {
 			expect(diff.renderDiff({ a: 1, b: 2, c: 3 }, { a: 100, b: 200, c: 300 })).to.equal(
 				"{\n" +
@@ -82,6 +86,8 @@ describe("renders differences for", function() {
 				"}"
 			);
 		});
+
+		it("different prototype");  // TODO
 	});
 
 	describe("arrays:", function() {
@@ -289,6 +295,7 @@ describe("matches", function() {
 			expect(diff.match(null, null)).to.be(true);
 			expect(diff.match(null, undefined)).to.be(false);
 			expect(diff.match(null, {})).to.be(false);
+			expect(diff.match({}, null)).to.be(false);
 		});
 
 		it("boolean", function() {
