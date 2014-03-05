@@ -146,8 +146,9 @@ exports.render = function(obj) {
 };
 
 function renderWithIndent(indent, obj, collapseObjects) {
-	if (Array.isArray(obj)) return arrayRender(indent, obj);
-	else if (!collapseObjects && typeof obj === "object") return objectRender(indent, obj);
+	if (collapseObjects) return flatRender(obj);
+	else if (Array.isArray(obj)) return arrayRender(indent, obj);
+	else if (typeof obj === "object") return objectRender(indent, obj);
 	else return flatRender(obj);
 }
 
@@ -155,6 +156,10 @@ function flatRender(obj) {
 	if (obj === undefined) return "undefined";
 	if (obj === null) return "null";
 	if (typeof obj === "string") return JSON.stringify(obj);
+	if (Array.isArray(obj)) {
+		if (obj.length === 0) return "[]";
+		return "[...]";
+	}
 	if (typeof obj === "object") {
 		if (Object.getOwnPropertyNames(obj).length === 0) return "{}";
 		else return "{...}";

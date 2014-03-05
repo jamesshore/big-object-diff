@@ -213,6 +213,34 @@ describe("renders differences for", function() {
 				"]"
 			);
 		});
+
+		it("collapses extra and missing arrays", function() {
+			var a = [ [ 0 ] ];
+			var b = [];
+			b[1] = [ 1 ];
+			expect(diff.renderDiff(a, b)).to.equal(
+				"[\n" +
+				"  // missing properties:\n" +
+				"  0: [...]\n" +
+				"  // extra properties:\n" +
+				"  1: [...]\n" +
+				"]"
+			);
+
+			expect(diff.renderDiff([ null ], [])).to.equal(
+				"[\n" +
+				"  // missing properties:\n" +
+				"  0: null\n" +
+				"]"
+			);
+
+			expect(diff.renderDiff([ [] ], [])).to.equal(
+				"[\n" +
+				"  // missing properties:\n" +
+				"  0: []\n" +
+				"]"
+			);
+		});
 	});
 
 	describe("arrays and objects compared:", function() {
