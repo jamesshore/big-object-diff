@@ -10,13 +10,8 @@ exports.renderDiff = function(expected, actual) {
 function renderDiffWithIndent(indent, expected, actual) {
 	if (exports.match(expected, actual)) return "";
 
-	var expectedIsArray = Array.isArray(expected);
-	var actualIsArray = Array.isArray(actual);
-	var expectedIsObject = (typeof expected === "object") && (expected !== null) && !expectedIsArray;
-	var actualIsObject = (typeof actual === "object") && (actual !== null) && !actualIsArray;
-
-	if (expectedIsArray && actualIsArray) return arrayRenderDiff(indent, expected, actual);
-	if (actualIsObject && expectedIsObject) return objectRenderDiff(indent, expected, actual);
+	if (isArray(expected) && isArray(actual)) return arrayRenderDiff(indent, expected, actual);
+	if (isObject(actual) && isObject(expected)) return objectRenderDiff(indent, expected, actual);
 	else return flatRenderDiff(expected, actual);
 }
 
@@ -102,7 +97,7 @@ exports.render = function(obj) {
 
 function renderWithIndent(indent, obj, collapseObjects) {
 	if (collapseObjects) return flatRender(obj);
-	else if (Array.isArray(obj)) return arrayRender(indent, obj);
+	else if (isArray(obj)) return arrayRender(indent, obj);
 	else if (typeof obj === "object") return objectRender(indent, obj);
 	else return flatRender(obj);
 }
@@ -111,7 +106,7 @@ function flatRender(obj) {
 	if (obj === undefined) return "undefined";
 	if (obj === null) return "null";
 	if (typeof obj === "string") return JSON.stringify(obj);
-	if (Array.isArray(obj)) {
+	if (isArray(obj)) {
 		if (obj.length === 0) return "[]";
 		return "[...]";
 	}
@@ -176,4 +171,12 @@ function objectMatch(a, b) {
 	return aKeys.every(function(key) {
 		return exports.match(a[key], b[key]);
 	});
+}
+
+function isArray(obj) {
+	return Array.isArray(obj);
+}
+
+function isObject(obj) {
+	return typeof obj === "object" && obj !== null && !isArray(obj);
 }
