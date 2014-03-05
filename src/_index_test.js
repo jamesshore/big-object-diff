@@ -93,6 +93,31 @@ describe("renders differences for", function() {
 			);
 		});
 
+		it("collapses extra and missing objects", function() {
+			expect(diff.renderDiff({ a: { b: 1 }}, { b: { c: 2 }})).to.equal(
+				"{\n" +
+				"  // missing properties:\n" +
+				"  a: {...}\n" +
+				"  // extra properties:\n" +
+				"  b: {...}\n" +
+				"}"
+			);
+
+			expect(diff.renderDiff({ a: null }, {})).to.equal(
+				"{\n" +
+				"  // missing properties:\n" +
+				"  a: null\n" +
+				"}"
+			);
+
+			expect(diff.renderDiff({ a: {} }, {})).to.equal(
+				"{\n" +
+				"  // missing properties:\n" +
+				"  a: {}\n" +
+				"}"
+			);
+		});
+
 		it("complex comparison", function() {
 			expect(diff.renderDiff({ a: 1, b: { b1: 2 }, c: 3 }, { a: 99, b: { b1: 2, b2: 3 } })).to.equal(
 				"{\n" +

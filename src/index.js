@@ -128,7 +128,7 @@ function renderPropertiesDiff(oldIndent, expected, actual, ignoreLengthProperty)
 
 	function propertyBlock(obj, keys, title) {
 		if (keys.length === 0) return "";
-		return "\n" + indent + "// " + title + ":" + renderProperties(oldIndent, obj, keys, false);
+		return "\n" + indent + "// " + title + ":" + renderProperties(oldIndent, obj, keys, false, true);
 	}
 
 	function mismatchedPrototype() {
@@ -142,18 +142,23 @@ function renderPropertiesDiff(oldIndent, expected, actual, ignoreLengthProperty)
 }
 
 exports.render = function(obj) {
-	return renderWithIndent("", obj);
+	return renderWithIndent("", obj, false);
 };
 
-function renderWithIndent(indent, obj) {
+function renderWithIndent(indent, obj, collapseObjects) {
 	if (Array.isArray(obj)) return arrayRender(indent, obj);
-	else if (typeof obj === "object") return objectRender(indent, obj);
+	else if (!collapseObjects && typeof obj === "object") return objectRender(indent, obj);
 	else return flatRender(obj);
 }
 
 function flatRender(obj) {
 	if (obj === undefined) return "undefined";
+	if (obj === null) return "null";
 	if (typeof obj === "string") return JSON.stringify(obj);
+	if (typeof obj === "object") {
+		if (Object.getOwnPropertyNames(obj).length === 0) return "{}";
+		else return "{...}";
+	}
 	if (typeof obj === "function") {
 		if (!obj.name) return "<anon>()";
 		else return obj.name + "()";
@@ -165,7 +170,7 @@ function flatRender(obj) {
 function arrayRender(indent, obj) {
 	if (obj.length === 0) return "[]";
 
-	var properties = renderProperties(indent, obj, Object.getOwnPropertyNames(obj), true);
+	var properties = renderProperties(indent, obj, Object.getOwnPropertyNames(obj), true, false);
 	return "[" + properties + "\n" + indent + "]";
 }
 
@@ -173,15 +178,15 @@ function objectRender(indent, obj) {
 	if (obj === null) return "null";
 	if (Object.getOwnPropertyNames(obj).length === 0) return "{}";
 
-	var properties = renderProperties(indent, obj, Object.getOwnPropertyNames(obj), false);
+	var properties = renderProperties(indent, obj, Object.getOwnPropertyNames(obj), false, false);
 	return "{" + properties + "\n" + indent + "}";
 }
 
-function renderProperties(indent, obj, keys, ignoreLengthProperty) {
+function renderProperties(indent, obj, keys, ignoreLengthProperty, collapseObjects) {
 	var newIndent = indent + INDENT_TEXT;
 	var properties = keys.reduce(function(accumulated, key) {
 		if (ignoreLengthProperty && key === "length") return accumulated;
-		return accumulated + "\n" + newIndent + key + ": " + renderWithIndent(newIndent, obj[key]);
+		return accumulated + "\n" + newIndent + key + ": " + renderWithIndent(newIndent, obj[key], collapseObjects);
 	}, "");
 	return properties;
 }

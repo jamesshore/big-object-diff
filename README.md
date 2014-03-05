@@ -35,6 +35,8 @@ Deep compare two objects and return `true` if they are the same, `false` if not.
 
 ## Version History
 
+* 0.6.0 renderDiff() collapses extra and missing properties when they're objects
+
 * 0.5.0 Initial release
 
 ## License
