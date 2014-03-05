@@ -92,7 +92,7 @@ function renderPropertiesDiff(oldIndent, expected, actual, ignoreLengthProperty)
 	var missingKeys = [];
 
 	analyzeKeys();
-	return incorrectProperties() + missingProperties() + extraProperties();
+	return incorrectProperties() + missingProperties() + extraProperties() + mismatchedPrototype();
 
 	function analyzeKeys() {
 		var expectedKeys = Object.getOwnPropertyNames(expected);
@@ -129,6 +129,14 @@ function renderPropertiesDiff(oldIndent, expected, actual, ignoreLengthProperty)
 	function propertyBlock(obj, keys, title) {
 		if (keys.length === 0) return "";
 		return "\n" + indent + "// " + title + ":" + renderProperties(oldIndent, obj, keys, false);
+	}
+
+	function mismatchedPrototype() {
+		var expectedProto = Object.getPrototypeOf(expected);
+		var actualProto = Object.getPrototypeOf(actual);
+
+		if (expectedProto !== actualProto) return "\n" + indent + "// objects have different prototypes";
+		else return "";
 	}
 
 }

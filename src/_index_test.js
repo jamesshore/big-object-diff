@@ -107,7 +107,16 @@ describe("renders differences for", function() {
 			);
 		});
 
-		it("different prototype");  // TODO
+		it("different prototype", function() {
+			var a = { a: 1 };
+			var b = { b: 2 };
+
+			expect(diff.renderDiff(Object.create(a), Object.create(b))).to.equal(
+				"{\n" +
+					"  // objects have different prototypes\n" +
+				"}"
+			);
+		});
 	});
 
 	describe("arrays:", function() {
